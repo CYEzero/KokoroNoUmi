@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}
+{% if post %}编辑文章{% else %}新建文章{% endif %}
+{% endblock %}
+{% block content %}
+<div class="card post-detail-form-container">
+  <h2 class="post-form-title">
+    {% if post %}
+    <i class="fa-solid fa-pen-to-square"></i> 编辑文章 {% else %}
+    <i class="fa-solid fa-feather"></i> 新建文章 {% endif %}
+  </h2>
+
+  <!-- Markdown 文件导入提示 -->
+  <div style="background: rgba(56,189,248,0.1); padding: 15px; border-radius: 8px; margin-bottom: 25px; border: 1px dashed var(--accent-color); display: flex; align-items: center; gap: 15px;">
+    <div>
+      <label for="md-upload" class="btn btn-outline" style="cursor: pointer;">
+        <i class="fa-brands fa-markdown"></i> 导入 Markdown 文件
+      </label>
+      <input type="file" id="md-upload" accept=".md" style="display: none;" />
+    </div>
+    <span style="font-size: 0.9rem; color: var(--text-light);">
+      <i class="fa-solid fa-circle-info"></i> 选择文件后，标题和内容将自动填充。
+    </span>
+  </div>
+
+  <form method="POST">
+    <!-- 标题 -->
+    <div class="form-group">
+      <label for="title" class="form-label">文章标题</label>
+      <input
+        type="text"
+        id="title"
+        name="title"
+        class="form-control"
+        value="{{ post.title if post else '' }}"
+        placeholder="请输入文章标题..."
+        required
+      />
+    </div>
+
+    <!-- 标签输入框 -->
+    <div class="form-group">
+      <label for="tags" class="form-label">文章标签 (用逗号分隔)</label>
+      <!-- 取出所有 tag 的 name，用逗号拼接 -->
+      <input
+        type="text"
+        id="tags"
+        name="tags"
+        class="form-control"
+        value="{{ post.tags|map(attribute='name')|join(', ') if post else '' }}"
+        placeholder="例如：Python, 后端, 教程"
+      />
+    </div>
+
+    <!-- 内容 -->
+    <div class="form-group">
+      <label for="content" class="form-label">文章内容</label>
+      <textarea
+        id="content"
+        name="content"
+        class="form-control"
+        placeholder="在这里写下你的想法..."
+        required
+      >{{ post.content if post else '' }}</textarea>
+    </div>
+
+    <!-- 按钮组 -->
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">
+        <i class="fa-solid fa-paper-plane"></i>
+        {% if post %}保存修改{% else %}发布文章{% endif %}
+      </button>
+
+      <a
+        href="{{ url_for('home') }}"
+        class="btn btn-outline"
+      >
+        取消
+      </a>
+    </div>
+  </form>
+</div>
+
+<script>
+  document.getElementById('md-upload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // 自动填标题 (去掉 .md 后缀)
+    const fileName = file.name.replace(/\.md$/i, '');
+    document.getElementById('title').value = fileName;
+
+    // 读取内容并填入文本框
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById('content').value = e.target.result;
+    };
+    reader.readAsText(file);
+  });
+</script>
+{% endblock %}

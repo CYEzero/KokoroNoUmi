@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}魔方计时器 · 心之海{% endblock %}
+{% block content %}
+<div class="card timer-container">
+  <div class="scramble-display"></div>
+  
+  <div class="time-display">0.000</div>
+  
+  <div class="instruction">
+    <i class="fa-regular fa-keyboard"></i> 长按空格准备，松开开始，再次按下停止，最后按下复位并刷新打乱公式
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/cube_timer.js') }}"></script>
+{% endblock %}

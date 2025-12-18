@@ -1,0 +1,14 @@
+# 忽略 Python 缓存
+__pycache__/
+*.py[cod]
+
+# 忽略虚拟环境
+venv/
+.env
+
+# 忽略数据库文件 (通常不上传本地数据库)
+*.db
+blog.db
+
+# 忽略 VS Code 配置
+.vscode/

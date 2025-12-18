@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}心之海{% endblock %}</title>
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='img/favicon.ico') }}"
+      type="image/x-icon"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='fontawesome-6.7.2/css/all.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/markdown.css') }}"
+    />
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <!-- 网站头部导航栏 -->
+    <header class="site-header">
+      <div class="container flex-row">
+        <div class="logo">
+          <a href="{{ url_for('home') }}"><i class="fa fa-blog"></i> 心之海</a>
+        </div>
+
+        <nav class="navbar">
+          <ul>
+            <li>
+              <a href="{{ url_for('home') }}"
+                ><i class="fa fa-home"></i> 首页</a
+              >
+            </li>
+            <li>
+              <a href="{{ url_for('about') }}"
+                ><i class="fa fa-id-badge"></i> 关于</a
+              >
+            </li>
+            <li class="dropdown">
+              <a href="#"
+                ><i class="fa fa-toolbox"></i> 工具
+                <i class="fa fa-caret-down"></i
+              ></a>
+              <div class="dropdown-content">
+                <a href="{{ url_for('cube_timer') }}"
+                  ><i class="fa-solid fa-clock"></i> 魔方计时器</a
+                >
+              </div>
+            </li>
+            <!-- 管理员专用链接 -->
+            {% if is_admin %}
+            <li>
+              <a href="{{ url_for('create_post') }}" class="nav-highlight">
+                <i class="fa-solid fa-pen"></i> 新建文章
+              </a>
+            </li>
+            <li>
+              <a href="{{ url_for('logout') }}"
+                ><i class="fa-solid fa-right-from-bracket"></i> 退出</a
+              >
+            </li>
+            {% else %}
+            <li>
+              <a href="{{ url_for('login') }}"
+                ><i class="fa-solid fa-key"></i> 登录</a
+              >
+            </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Flash 消息区域 -->
+    <div class="flash-messages">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        <i class="fa-solid fa-bell"></i> {{ message }}
+      </div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+    </div>
+
+    <!-- 背景视频 -->
+    <video autoplay muted loop playsinline class="video-bg" poster="{{ url_for('static', filename='img/video_bg_poster.jpg') }}">
+      <source
+        src="{{ url_for('static', filename='video/video_bg.mp4') }}"
+        type="video/mp4"
+      />
+    </video>
+
+    <!-- 主内容区 -->
+    <main class="site-content">
+      {% block hero %} {% endblock %}
+      <div class="container">
+        {% block content %} {% endblock %}
+      </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-layout">
+          
+          <div class="footer-info">
+            <p class="copyright">
+              &copy; 2025 <strong>KokoroNoUmi</strong>
+              <span class="version-badge">v0.3</span>
+            </p>
+            <p class="tech-stack">
+              <i class="fa fa-code"></i> Powered by
+              <a href="https://flask.palletsprojects.com/" target="_blank">Flask</a> &
+              <a href="https://jinja.palletsprojects.com/" target="_blank">Jinja2</a>
+            </p>
+            <p class="tech-stack">
+              <i class="fa-brands fa-font-awesome"></i> Icons by
+              <a href="https://fontawesome.com/" target="_blank">FontAwesome 6.7.2</a>
+            </p>
+          </div>
+
+          <!-- 友情链接 -->
+          <div class="footer-links">
+            <h4 class="footer-title"><i class="fa-solid fa-link"></i> 友情链接</h4>
+            <div class="friend-list">
+              <a href="http://www.ijios.club:2233" target="_blank" class="friend-item">
+                ijios_JMX
+              </a>
+              <a href="#" class="friend-item placeholder">
+                <i class="fa-solid fa-plus"></i> 虚位以待
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // 平滑滚动到文章列表
+      const scrollIndicator = document.querySelector(".scroll-down-indicator");
+      if (scrollIndicator) {
+        scrollIndicator.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector("#posts-start");
+          if (target) {
+            const headerOffset = 70;
+            const elementPosition = target.getBoundingClientRect().top;
+            const offsetPosition =
+              elementPosition + window.pageYOffset - headerOffset;
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: "smooth",
+            });
+          }
+        });
+      }
+
+      // Flash 消息自动消失
+      setTimeout(function () {
+        const alerts = document.querySelectorAll(".alert");
+        alerts.forEach((alert) => {
+          alert.style.opacity = "0";
+          setTimeout(() => alert.remove(), 500);
+        });
+      }, 3000);
+    </script>
+  </body>
+</html>

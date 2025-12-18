@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}管理员登录 · 心之海{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 450px; margin: 40px auto; padding: 40px">
+  <div style="text-align: center; margin-bottom: 30px">
+    <i
+      class="fa-solid fa-user-shield"
+      style="font-size: 3rem; color: var(--accent-color)"
+    ></i>
+    <h2 style="margin-top: 15px; color: var(--primary-color)">管理员登录</h2>
+  </div>
+
+  <form method="POST">
+    <div class="form-group">
+      <label for="username" class="form-label">账号</label>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        class="form-control"
+        placeholder="请输入管理员账号"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="password" class="form-label">密码</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        class="form-control"
+        placeholder="请输入密码"
+        required
+      />
+    </div>
+
+    <button
+      type="submit"
+      class="btn btn-primary"
+      style="width: 100%; justify-content: center; margin-top: 20px"
+    >
+      <i class="fa-solid fa-right-to-bracket"></i>立即登录
+    </button>
+  </form>
+</div>
+{% endblock %}

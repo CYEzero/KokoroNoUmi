@@ -1,0 +1,101 @@
+{% extends "base.html" %} 
+{% block title %}首页 · 心之海{% endblock %} 
+
+<!-- 首屏巨幕 -->
+{% block hero %}
+<section class="hero-header">
+  <div class="container">
+    <h1 class="hero-title">海内存知己，天涯若比邻</h1>
+    <h2 class="hero-subtitle">紗衣 澪の心之海、ようこそ！</h2>
+  </div>
+
+  <a href="#posts-start" class="scroll-down-indicator">
+    <i class="fa-solid fa-chevron-down"></i>
+  </a>
+</section>
+{% endblock %} 
+
+<!-- 主内容区 -->
+{% block content %}
+<div id="posts-start"></div>
+
+<div class="home-layout">
+  <!-- 文章列表区 -->
+  <div class="post-list-column">
+    {% if posts %} 
+      {% for post in posts %}
+      <article class="card">
+        <!-- 文章标题 -->
+        <h2 class="post-title">
+          <a href="{{ url_for('post_detail', post_id=post.id) }}">{{ post.title }}</a>
+        </h2>
+
+        <div class="post-meta">
+          <!-- 日期和标签 -->
+          <span>
+            <i class="fa-regular fa-calendar"></i> {{ post.created_at.strftime('%Y-%m-%d') }}
+          </span>
+          {% if post.tags %}
+          <span class="tag-container">
+            <i class="fa-solid fa-tags"></i>
+            {% for tag in post.tags %}
+            <span class="tag-badge">{{ tag.name }}</span>
+            {% endfor %}
+          </span>
+          {% else %}
+          <span><i class="fa-solid fa-tags"></i> 无标签</span>
+          {% endif %}
+        </div>
+
+        <!-- 文章摘要 -->
+        <p class="post-excerpt">{{ post.content[:150] | striptags }}...</p>
+
+        <a href="{{ url_for('post_detail', post_id=post.id) }}" class="btn-readmore">
+          阅读全文 <i class="fa-solid fa-arrow-right-long"></i>
+        </a>
+      </article>
+      {% endfor %} 
+    {% else %}
+      <div class="card empty-state-card">
+        <i class="fa-solid fa-inbox empty-state-icon"></i>
+        <p style="color: var(--text-muted)">空空如也，快去写下第一篇博客吧！</p>
+        {% if is_admin %}
+        <div style="margin-top: 20px">
+          <a href="{{ url_for('create_post') }}" class="btn btn-primary">写文章</a>
+        </div>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- 侧边栏区 -->
+  <aside class="sidebar-column">
+    <!-- 个人信息 -->
+    <div class="sidebar-widget profile-widget">
+      <div class="profile-avatar">
+        <img src="{{ url_for('static', filename='img/avatar.jpg') }}" alt="Avatar" />
+      </div>
+      <a class="profile-name" href="{{ url_for('about') }}">紗衣 澪</a>
+
+      <div class="profile-social">
+        <a href="https://github.com/CYEzero"><i class="fa-brands fa-github"></i></a>
+        <a href="https://steamcommunity.com/profiles/76561198847432902/"><i class="fa-brands fa-steam"></i></a>
+      </div>
+    </div>
+    
+    <!-- 标签云 -->
+    <div class="sidebar-widget">
+      <h3 class="widget-title"><i class="fa-solid fa-tags"></i> 标签</h3>
+      <div class="tag-cloud">
+        {% if tags %} 
+          {% for tag in tags %}
+          <p class="tag-item">{{ tag.name }}</p>
+          {% endfor %} 
+        {% else %}
+          <p style="color: #999; font-size: 0.9rem">暂无标签</p>
+        {% endif %}
+      </div>
+    </div>
+  </aside>
+</div>
+{% endblock %}

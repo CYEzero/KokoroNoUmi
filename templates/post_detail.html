@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }} · 心之海{% endblock %}
+{% block content %}
+<article class="card post-detail-form-container">
+  <!-- 头部：标题和元数据 -->
+  <header class="post-header">
+    <h1 class="post-title-large">{{ post.title }}</h1>
+    <div class="post-meta">
+      <span
+        ><i class="fa-regular fa-calendar"></i> {{
+        post.created_at.strftime('%Y-%m-%d %H:%M') }}</span
+      >
+      <!-- 标签展示 -->
+      {% if post.tags %}
+      <span class="tag-container">
+        <i class="fa-solid fa-tags"></i>
+        {% for tag in post.tags %}
+        <span class="tag-badge">{{ tag.name }}</span>
+        {% endfor %}
+      </span>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- 正文内容 -->
+  <div class="post-content markdown-body">{{ post.content | markdown | safe }}</div>
+
+  <!-- 管理员操作区 (仅管理员可见) -->
+  {% if is_admin %}
+  <div class="admin-panel">
+    <h4 class="admin-panel-title">
+      <i class="fa-solid fa-user-shield"></i> 管理员操作区
+    </h4>
+    <div class="admin-actions">
+      <!-- 编辑按钮 -->
+      <a
+        href="{{ url_for('edit_post', post_id=post.id) }}"
+        class="btn btn-primary"
+      >
+        <i class="fa-solid fa-pen-to-square"></i> 编辑文章
+      </a>
+
+      <!-- 删除按钮 (必须用 Form 提交 POST 请求) -->
+      <form
+        action="{{ url_for('delete_post', post_id=post.id) }}"
+        method="POST"
+        onsubmit="return confirm('确定要删除《{{ post.title }}》吗？删除后无法恢复！');"
+      >
+        <button type="submit" class="btn btn-danger">
+          <i class="fa-solid fa-trash"></i> 删除文章
+        </button>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+</article>
+
+<!-- 底部返回按钮 -->
+<div class="back-link-container">
+  <a href="{{ url_for('home') }}" class="back-link">
+    <i class="fa-solid fa-arrow-left"></i> 返回首页列表
+  </a>
+</div>
+
+{% endblock %}
