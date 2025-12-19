@@ -120,11 +120,16 @@ class Post(db.Model):
 @app.route("/")
 @app.route("/home")
 def home():
-    # 按时间倒序排列
-    posts = Post.query.order_by(Post.created_at.desc()).all()
+    # 分页显示
+    page = request.args.get("page", 1, type=int)  # 当前页码，默认第1页
+    per_page = 10
+    pagination = Post.query.order_by(Post.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    posts = pagination.items  # 当前页的文章列表
+    
     # 获取所有标签用于侧边栏展示
     tags = Tag.query.all()
-    return render_template("home.html", posts=posts, tags=tags)
+    
+    return render_template("home.html", posts=posts, tags=tags, pagination=pagination)
 
 
 @app.route("/post/<int:post_id>")

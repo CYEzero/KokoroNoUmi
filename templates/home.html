@@ -22,7 +22,7 @@
 <div class="home-layout">
   <!-- 文章列表区 -->
   <div class="post-list-column">
-    {% if posts %} 
+    {% if posts %}
       {% for post in posts %}
       <article class="card">
         <!-- 文章标题 -->
@@ -30,11 +30,12 @@
           <a href="{{ url_for('post_detail', post_id=post.id) }}">{{ post.title }}</a>
         </h2>
 
+        <!-- 日期和标签 -->
         <div class="post-meta">
-          <!-- 日期和标签 -->
           <span>
             <i class="fa-regular fa-calendar"></i> {{ post.created_at.strftime('%Y-%m-%d') }}
           </span>
+
           {% if post.tags %}
           <span class="tag-container">
             <i class="fa-solid fa-tags"></i>
@@ -49,12 +50,37 @@
 
         <!-- 文章摘要 -->
         <p class="post-excerpt">{{ post.content[:150] | striptags }}...</p>
-
         <a href="{{ url_for('post_detail', post_id=post.id) }}" class="btn-readmore">
           阅读全文 <i class="fa-solid fa-arrow-right-long"></i>
         </a>
       </article>
-      {% endfor %} 
+      {% endfor %}
+
+      <!-- 分页栏 -->
+      {% if pagination.pages > 1 %}
+      <div class="pagination-bar">
+        {% if pagination.has_prev %}
+        <a href="{{ url_for('home', page=pagination.prev_num) }}" class="btn-page">
+          <i class="fa-solid fa-angle-left"></i> 上一页
+        </a>
+        {% else %}
+        <span class="btn-page disabled"><i class="fa-solid fa-angle-left"></i> 上一页</span>
+        {% endif %}
+
+        <span class="page-info">
+          {{ pagination.page }} / {{ pagination.pages }}
+        </span>
+
+        {% if pagination.has_next %}
+        <a href="{{ url_for('home', page=pagination.next_num) }}" class="btn-page">
+          下一页 <i class="fa-solid fa-angle-right"></i>
+        </a>
+        {% else %}
+        <span class="btn-page disabled">下一页 <i class="fa-solid fa-angle-right"></i></span>
+        {% endif %}
+      </div>
+      {% endif %}
+
     {% else %}
       <div class="card empty-state-card">
         <i class="fa-solid fa-inbox empty-state-icon"></i>
